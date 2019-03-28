@@ -223,28 +223,7 @@ let app = {
     }
   },
 
-  deleteReview: function (reviewId) {
-    reviewList = app.list.filter(function (list) {
 
-      if (list.id != reviewId) {
-        return true;
-      } else {
-        let index = app.list.indexOf(list);
-        listOfReviews = document.getElementById('reviewList');
-        listOfReviews.removeChild(listOfReviews.children[index]);
-      }
-    });
-
-    app.list = reviewList;
-    localStorage.setItem(app.key, JSON.stringify(app.list));
-    console.log(app.list);
-  },
-
-  failPosition: function (err) {
-    console.log("failPosition", err);
-    //failed to get the user's location for whatever reason
-    app.gotPosition(app.defaultPos);
-  }
 };
 
 app.init();
