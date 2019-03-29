@@ -2,9 +2,9 @@ let app = {
   map: null,
   input: "",
   currentMarker: null,
-  position:"",
+  position: "",
   key: "key",
-  markerList:[],
+  markerList: [],
   defaultPos: {
     coords: {
       latitude: 45.555,
@@ -24,7 +24,7 @@ let app = {
   mapScriptReady: function () {
     //script has loaded. Now get the location
     if (navigator.geolocation) {
-      
+
       let options = {
         enableHighAccuracy: true,
         timeout: 20000,
@@ -84,25 +84,27 @@ let app = {
     });
 
 
-    let infoWindow = new google.maps.InfoWindow({ map:app.map });
-  
-      let contentDiv = document.createElement("div");
-      let p = document.createElement("p");
-      p.textContent = app.input;
-      contentDiv.appendChild(p);
-      let deleteBtn = document.createElement("button");
-      deleteBtn.textContent = "Delete";
-      deleteBtn.addEventListener("click", function(){
+    let infoWindow = new google.maps.InfoWindow({
+      map: app.map
+    });
 
-        app.markerDelete(marker,infoWindow)
-      });
+    let contentDiv = document.createElement("div");
+    let p = document.createElement("p");
+    p.textContent = app.input;
+    contentDiv.appendChild(p);
+    let deleteBtn = document.createElement("button");
+    deleteBtn.textContent = "Delete";
+    deleteBtn.addEventListener("click", function () {
+
+      app.markerDelete(marker, infoWindow)
+    });
 
 
-      contentDiv.appendChild(deleteBtn);
-      infoWindow.setContent(contentDiv);
+    contentDiv.appendChild(deleteBtn);
+    infoWindow.setContent(contentDiv);
 
-      marker.addListener('click', function () {
-        infoWindow.open(map, marker)
+    marker.addListener('click', function () {
+      infoWindow.open(map, marker)
     });
 
     let mkrObject = {
@@ -111,11 +113,11 @@ let app = {
         lat: app.position.lat(),
         lng: app.position.lng()
       }
-  }
+    }
 
-  app.markerList.push(mkrObject);
+    app.markerList.push(mkrObject);
 
-  localStorage.setItem(app.key,JSON.stringify(app.markerList))
+    localStorage.setItem(app.key, JSON.stringify(app.markerList))
 
     //add click listener to Marker
     marker.addListener("click", app.markerClick);
@@ -134,16 +136,16 @@ let app = {
   },
 
   markerDblClick: function (ev) {
-     console.log("Double Click", ev);
+    console.log("Double Click", ev);
 
     app.position = ev.latLng;
-    
+
     //console.log(app.position.lat());
 
     app.showPrompt();
-    
- 
-    
+
+
+
 
   },
 
@@ -155,20 +157,19 @@ let app = {
 
 
         app.input = response.input1;
-        
-        if (response.buttonIndex == 1){
-          return;
-        }
-        else{
-          app.addMarker();          
-        } 
 
-        
+        if (response.buttonIndex == 1) {
+          return;
+        } else {
+          app.addMarker();
+        }
+
+
       }, "Hello", buttons);
 
   },
 
-  markerDelete: function(marker,infoWindow){
+  markerDelete: function (marker, infoWindow) {
     console.log("delete button inside info window was clicked");
     infoWindow.close();
     marker.setMap(null);
@@ -180,52 +181,49 @@ let app = {
   localStorage: function () {
     console.log("Called local storage");
     let storage = localStorage.getItem(app.key);
-    
+
     if (storage) {
       console.log("In if statement");
-        app.markerList = JSON.parse(storage);
-        console.log(app.markerlist, "list");
-        console.log("markerList",app.markerList);
-        app.markerList.forEach(item => {
+      app.markerList = JSON.parse(storage);
+      console.log(app.markerlist, "list");
+      console.log("markerList", app.markerList);
+      app.markerList.forEach(item => {
 
-          let marker = new google.maps.Marker({
-            map: app.map,
-            draggable: false,
-            position: item.position
-          });
-          
-          console.log(item,"item");
-          let infoWindow = new google.maps.InfoWindow({ map:app.map });
-        
-            let contentDiv = document.createElement("div");
-            let p = document.createElement("p");
-            p.textContent = item.title;
-            contentDiv.appendChild(p);
-            let deleteBtn = document.createElement("button");
-            deleteBtn.textContent = "Delete";
-            deleteBtn.addEventListener("click", function(){
-      
-              app.markerDelete(marker,infoWindow)
-            });
-      
-      
-            contentDiv.appendChild(deleteBtn);
-            infoWindow.setContent(contentDiv);
-      
-            marker.addListener('click', function () {
-              infoWindow.open(map, marker)
-          });
-        })
-        
+        let marker = new google.maps.Marker({
+          map: app.map,
+          draggable: false,
+          position: item.position
+        });
+
+        console.log(item, "item");
+        let infoWindow = new google.maps.InfoWindow({
+          map: app.map
+        });
+
+        let contentDiv = document.createElement("div");
+        let p = document.createElement("p");
+        p.textContent = item.title;
+        contentDiv.appendChild(p);
+        let deleteBtn = document.createElement("button");
+        deleteBtn.textContent = "Delete";
+        deleteBtn.addEventListener("click", function () {
+
+          app.markerDelete(marker, infoWindow)
+        });
+
+
+        contentDiv.appendChild(deleteBtn);
+        infoWindow.setContent(contentDiv);
+
+        marker.addListener('click', function () {
+          infoWindow.open(map, marker)
+        });
+      })
+
     }
-},
+  },
 
 
-  failPosition: function (err) {
-    console.log("failPosition", err);
-    //failed to get the user's location for whatever reason
-    app.gotPosition(app.defaultPos);
-  }
 };
 
 app.init();
